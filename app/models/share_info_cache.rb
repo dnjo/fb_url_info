@@ -21,15 +21,11 @@ class ShareInfoCache
     end
 
     def get_uncached_urls(cached_info)
-      cached_info.each_with_object([]) do |(url, info), urls|
-        urls << url unless info
-      end
+      cached_info.select { |_url, info| info.nil? }.keys
     end
 
     def store_info(url_info)
-      url_info.each do |url, info|
-        cache_set url, info
-      end
+      url_info.each { |url, info| cache_set url, info }
     end
 
     def key_prefix
