@@ -7,7 +7,7 @@ describe ShareInfoCache do
       info = { testinfo: 'testvalue' }
       expect(CacheStore)
         .to(receive(:get))
-        .with(url)
+        .with("share_info-#{url}")
         .and_return info.to_json
       return_info = ShareInfoCache.get [url]
       expect(return_info[url]).to eq info
@@ -18,7 +18,7 @@ describe ShareInfoCache do
       info = { testinfo: 'testvalue' }
       expect(CacheStore)
         .to(receive(:get))
-        .with(url)
+        .with("share_info-#{url}")
         .and_return nil
       expect(ShareInfo)
         .to(receive(:call))
@@ -26,7 +26,7 @@ describe ShareInfoCache do
         .and_return url => info
       expect(CacheStore)
         .to(receive(:set))
-        .with url, info.to_json
+        .with "share_info-#{url}", info.to_json
       return_info = ShareInfoCache.get [url]
       expect(return_info[url]).to eq info
     end

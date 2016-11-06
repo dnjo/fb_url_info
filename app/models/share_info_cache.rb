@@ -9,9 +9,7 @@ class ShareInfoCache
 
     def get_from_cache(urls)
       urls.each_with_object({}) do |url, cached_info|
-        info = CacheStore.get url
-        info = JSON.parse info, symbolize_names: true if info
-        cached_info[url] = info
+        cached_info[url] = cache_get url
       end
     end
 
@@ -30,8 +28,21 @@ class ShareInfoCache
 
     def store_info(url_info)
       url_info.each do |url, info|
-        CacheStore.set url, info.to_json
+        cache_set url, info
       end
+    end
+
+    def key_prefix
+      'share_info-'
+    end
+
+    def cache_get(url)
+      info = CacheStore.get "#{key_prefix}#{url}"
+      JSON.parse info, symbolize_names: true if info
+    end
+
+    def cache_set(url, info)
+      CacheStore.set "#{key_prefix}#{url}", info.to_json
     end
   end
 end
