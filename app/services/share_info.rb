@@ -1,26 +1,24 @@
 class ShareInfo
   class << self
     def call(urls)
-      request_info urls
+      request_info urls, 50, {}
     end
 
     private
 
-    def request_info(urls)
-      info = {}
-      urls.each_slice(50) do |url_group|
-        ids = urls_string url_group
-        response = request_ids ids
+    def request_info(urls, count, info)
+      urls.each_slice count do |url_group|
+        response = request_urls url_group
         parsed_info = parse_response response, url_group
         info.merge! parsed_info
       end
       info
     end
 
-    def request_ids(ids)
-      query = { ids: ids }
+    def request_urls(urls)
+      ids = urls.join ','
       response = HTTParty.get base_url,
-                              query: query
+                              query: { ids: ids }
       JSON.parse response.body.to_s, symbolize_names: true
     end
 
@@ -38,10 +36,6 @@ class ShareInfo
       }
       return default_share_info unless info && info[:share]
       default_share_info.merge info[:share]
-    end
-
-    def urls_string(urls)
-      urls.join ','
     end
 
     def base_url
