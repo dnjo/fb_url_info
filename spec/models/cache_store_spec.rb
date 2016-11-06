@@ -23,7 +23,7 @@ describe CacheStore do
     end
   end
 
-  describe '#set' do
+  describe '.set' do
     it 'sets a key value pair with an expire time' do
       key = 'testkey'
       value = 'testvalue'
